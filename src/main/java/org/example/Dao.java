@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 public class Dao {
@@ -60,6 +61,13 @@ public class Dao {
         }
     }
 
+    public List<String> getUnavailableProductsNames(int scanId) {
+        try (SqlSession session = sessionFactory.openSession(true)) {
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            return mapper.getUnavailableProductsNames(scanId);
+        }
+    }
+
     public int getLastScanId() {
         try (SqlSession session = sessionFactory.openSession(true)) {
             ScanMapper mapper = session.getMapper(ScanMapper.class);
@@ -74,6 +82,7 @@ public class Dao {
             mapper.addScan(scanData);
         }
     }
+
 
 
 }

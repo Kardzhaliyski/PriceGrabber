@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 public interface ItemMapper {
     @Select("SELECT * FROM items WHERE item_id = #{itemId}")
     Item getItemByItemId(String itemId);
@@ -21,4 +23,7 @@ public interface ItemMapper {
 
     @Update("UPDATE items SET price = #{arg1}, scan_id = #{arg2} WHERE id = #{arg0}")
     void updateItemPriceAndScanId(Integer id, Double price, Integer scanId);
+
+    @Select("SELECT name FROM items WHERE scan_id = #{arg0}")
+    List<String> getUnavailableProductsNames(int oldScanId);
 }

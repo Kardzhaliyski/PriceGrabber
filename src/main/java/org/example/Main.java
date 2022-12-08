@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public class Main {
@@ -25,10 +26,35 @@ public class Main {
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         String url = "https://ardes.bg/laptopi/laptopi";
-        Document document = Jsoup.connect(url).get();
+
         scan = new ScanData(url);
         dao = Dao.getInstance();
 
+
+        int pageNum = 1;
+        String oldTitle = null;
+        while (true) {
+            String currentUrl = url + "/page/" + pageNum++;
+            Document document = Jsoup.connect(currentUrl).get();
+            String currentTitle = document.title();
+            if (currentTitle.equals(oldTitle)) {
+                break;
+            } else {
+                oldTitle = currentTitle;
+            }
+            extractItemsFromDocument(document);
+        }
+
+        int lastScanId = dao.getLastScanId();
+        scan.persist();
+
+        List<String> unavailableProducts = dao.getUnavailableProductsNames(lastScanId);
+        for (String p : unavailableProducts) {
+            System.out.println("Product is unavailable: " + p);
+        }
+    }
+
+    private static void extractItemsFromDocument(Document document) throws IOException {
         Elements items = document.select(".product");
         for (Element item : items) {
             String itemId = item.attr("data-sku");//id
@@ -51,8 +77,6 @@ public class Main {
             System.out.printf("PRICE CHANGE: %s, Old Price: %.2fлв New Price: %.2fлв%n",
                     itemFromDB.name, itemFromDB.price, price);
         }
-
-        scan.persist();
     }
 
     private static void addNewItem(Element itemElement) throws IOException {
