@@ -58,9 +58,10 @@ public class Main {
         Elements items = document.select(".product");
         for (Element item : items) {
             String itemId = item.attr("data-sku");//id
+            itemId = parseItemId(itemId);
             Item itemFromDB = dao.getItemByItemId(itemId);
             if (itemFromDB == null) {
-                addNewItem(item);
+                addNewItem(item, itemId);
                 continue;
             }
 
@@ -79,9 +80,7 @@ public class Main {
         }
     }
 
-    private static void addNewItem(Element itemElement) throws IOException {
-        String itemId = itemElement.attr("data-sku");//id
-        itemId = parseItemId(itemId);
+    private static void addNewItem(Element itemElement, String itemId) throws IOException {
         String title = itemElement.selectFirst(".title").text();
         String imgFilePath = "src/pictures/" + itemId + ".jpg";
         File file = new File(imgFilePath);
