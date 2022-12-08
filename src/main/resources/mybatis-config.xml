@@ -21,8 +21,7 @@
     </environments>
 
     <mappers>
-        <mapper class="dao.mapper.PostMapper"/>
-        <mapper class="dao.mapper.CommentMapper"/>
-        <mapper class="dao.mapper.UserMapper"/>
+        <mapper class="org.example.ItemMapper"/>
+        <mapper class="org.example.ScanMapper"/>
     </mappers>
 </configuration>
