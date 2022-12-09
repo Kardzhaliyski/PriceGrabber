@@ -101,14 +101,7 @@ public class Main {
         Element priceElem = itemElement.selectFirst(".price-num");
         Double price = getPrice(priceElem);
 
-        Item item = new Item();
-        item.itemId = itemId;
-        item.name = title;
-        item.imgLocation = imgFilePath;
-        item.description = description;
-        item.price = price;
-        item.priceChanged = LocalDateTime.now();
-        item.scanId = scan.id;
+        Item item = new Item(title, itemId, imgFilePath, price, LocalDateTime.now(), scan.id, description);
         scan.newItems++;
 
         System.out.printf("NEW ITEM: %s: %.2fлв%n", item.name, item.price);
